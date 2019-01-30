@@ -44,10 +44,34 @@ const buyMenu = () => {
        filter: function(input) {
          return parseInt(input);
        }
+     },
+     {
+       name: "confirmation",
+       type: "confirm",
+       message: "Are you sure you want to confirm with your transaction?",
+       default: true
      }
-    ]).then(({listedItems, quantity}) => {
-      connection.end()
-    })
+    ]).then((response) => {
+      if (response.confirmation === true) {
+        
+        //for each items match item selected on listedItems with item_id on table
+        const itemBought = productsDb.find(products => products.item_id === response.listedItems);
+        console.log(`You are attempting to buy ${response.quantity} ${itemBought.product_name}.`);
+        //console.log(itemBought);
+        
+        //check to see if there is enough for purchase
+        if (response.quantity > itemBought.stock_quantity) {
+          console.log("Your order exceeds the amount we currently have.");
+        }
+
+        connection.end();
+      } else {
+        //if false back to buy screen
+        buyMenu();
+      }
+
+      
+    }) // end of .then bracket
 
    //end of query brackets 
   })
