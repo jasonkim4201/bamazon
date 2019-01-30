@@ -8,8 +8,8 @@ var connection = mysql.createConnection({
   host: 'localhost',
   port: 3306,
   user: process.env.user,
-  password: process.env.pass, //insert password and maybe put it into an env file.
-  database: 'bamazon' //insert database name here.
+  password: process.env.pass,
+  database: 'bamazon'
 });
 
 connection.connect(function (error) {
@@ -17,8 +17,6 @@ connection.connect(function (error) {
   console.log("You have connected sucessfully to the database!");
   buyMenu();
 })
-// Running this application will first display all of the items available for sale. Include the ids, names, and prices of products for sale.
-
 
 const buyMenu = () => {
   //GET LISTED PRODUCTS FROM SQL DATABASE
@@ -65,30 +63,37 @@ const buyMenu = () => {
         console.log("\nProcessing order...");
         
         var purchaseTotal = response.quantity * itemBought.price;
-        console.log(`\nYour total will be $${purchaseTotal}.`);
         
-        itemBought.stock_quantity -= response.quantity;
-        console.log(`\n${itemBought.product_name} left: ${itemBought.stock_quantity}`);
+        var stockLeft = itemBought.stock_quantity - response.quantity;
+        
+        const updatedStock = {
+          stock_quantity: stockLeft
+        }
+
+        const itemWhere = {
+          item_id: itemBought.item_id
+        }
         
         //MAKE A QUERY TO UPDATE SQL DATABASE TO REFLECT PURCHASE CHANGES
-
-        connection.end();
+        const query = connection.query("UPDATE products SET ? WHERE ?", [updatedStock, itemWhere], function (error, productsDb) {
+          if (error) throw error;
+          
+          console.log(`\nYour total will be $${purchaseTotal}.`);
+          console.log(`\nThank you for purchasing at Bamazon. Please come again soon.`);
+          process.exit(0);
+        })
          
         } else {
           console.log("Your order exceeds the amount we currently have.");
           return buyMenu();
         }
-
         break;
       
         default:
         console.log("\n========= Your transaction has been cancelled. You will be brought back to the main menu. ========= \n");
         return buyMenu();
       }
-
-    }) // end of .then bracket
-
-   //end of query brackets 
+    });
   })
-}//end of original curly bracket
+}
 
