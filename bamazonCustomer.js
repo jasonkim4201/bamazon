@@ -52,27 +52,40 @@ const buyMenu = () => {
        default: true
      }
     ]).then((response) => {
-      if (response.confirmation === true) {
-        
-        //for each items match item selected on listedItems with item_id on table
+      switch (response.confirmation) {
+        case true:  
+        console.log("TRUE!!!!!!!!!!!!!");
+
         const itemBought = productsDb.find(products => products.item_id === response.listedItems);
         console.log(`You are attempting to buy ${response.quantity} ${itemBought.product_name}.`);
-        //console.log(itemBought);
-        
+      
         //check to see if there is enough for purchase
-        if (response.quantity > itemBought.stock_quantity) {
-          console.log("Your order exceeds the amount we currently have.");
-        }
 
-        connection.end();
-      } else {
-        //if false back to buy screen
-        buyMenu();
+        if (response.quantity < itemBought.stock_quantity) {
+        //calculate total price and subtract from stock_quantity
+        //forget this I'm leaving this hellish environment I made!
+          orderProcess();
+        } else {
+          console.log("Your order exceeds the amount we currently have.");
+          return buyMenu();
+        }
+        break;
+      
+        default:
+        console.log("\n========= Your transaction has been cancelled. You will be brought back to the main menu. ========= \n");
+        return buyMenu();
       }
 
-      
     }) // end of .then bracket
 
    //end of query brackets 
   })
 }//end of original curly bracket
+
+const orderProcess = () => {
+  //calculate total price and subtract from stock_quantity
+  console.log("\nProcessing order...");
+
+
+  connection.end();
+}
