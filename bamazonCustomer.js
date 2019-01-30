@@ -54,21 +54,31 @@ const buyMenu = () => {
     ]).then((response) => {
       switch (response.confirmation) {
         case true:  
-        console.log("TRUE!!!!!!!!!!!!!");
-
-        const itemBought = productsDb.find(products => products.item_id === response.listedItems);
-        console.log(`You are attempting to buy ${response.quantity} ${itemBought.product_name}.`);
+        
+        var itemBought = productsDb.find(products => products.item_id === response.listedItems);
+        console.log(`\nYou are attempting to buy ${response.quantity} ${itemBought.product_name}.`);
       
         //check to see if there is enough for purchase
 
         if (response.quantity < itemBought.stock_quantity) {
         //calculate total price and subtract from stock_quantity
-        //forget this I'm leaving this hellish environment I made!
-          orderProcess();
+        console.log("\nProcessing order...");
+        
+        var purchaseTotal = response.quantity * itemBought.price;
+        console.log(`\nYour total will be $${purchaseTotal}.`);
+        
+        itemBought.stock_quantity -= response.quantity;
+        console.log(`\n${itemBought.product_name} left: ${itemBought.stock_quantity}`);
+        
+        //MAKE A QUERY TO UPDATE SQL DATABASE TO REFLECT PURCHASE CHANGES
+
+        connection.end();
+         
         } else {
           console.log("Your order exceeds the amount we currently have.");
           return buyMenu();
         }
+
         break;
       
         default:
@@ -82,10 +92,3 @@ const buyMenu = () => {
   })
 }//end of original curly bracket
 
-const orderProcess = () => {
-  //calculate total price and subtract from stock_quantity
-  console.log("\nProcessing order...");
-
-
-  connection.end();
-}
