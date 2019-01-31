@@ -36,6 +36,7 @@ const login = () => {
       }
     ]).then((credentials) => {
       //validate if password is correct
+      // make recursive function and if password false 3x then system gets locked out.
       managerScreen();
     })
 
@@ -69,7 +70,7 @@ const managerScreen = () => {
 
       case "Add new product":
         console.log("\n\n");
-        process.exit(0);
+        addProduct();
         break;
 
       default:
@@ -99,7 +100,7 @@ const viewProducts = () => {
 
 
 const lowInventory = () => {
-  connection.query("SELECT * FROM products WHERE stock_quantity < 2500", (error, productsDb) => {
+  connection.query("SELECT * FROM products WHERE stock_quantity < 1000", (error, productsDb) => {
     if (error) throw error;
     console.table(productsDb);
 
@@ -183,5 +184,63 @@ const addInventory = () => {
 }
 
 const addProduct = () => {
+  //access product database
+  connection.query("SELECT * FROM products", (error, productsDb) => {
+    if (error) throw error;
+    inquirer.prompt([
+      { //ITEM ID IS NOT AN INTEGER. STUFF DIES WHEN I TRY TO MAKE IT SO
+        name: "id",
+        type: "input",
+        message: "Please assign the product an id."
+      },
+      {
+        name: "product",
+        type: "input",
+        message: "Please insert the name of the product."
+      },
+      {
+        name: "department",
+        type: "input",
+        message: "Please insert the department where the product falls under."
+      },
+      {
+        name: "price",
+        type: "input",
+        message: "Insert price for product.",
+        validate: function(input) {
+          return !isNaN(input);
+        },
+        filter: function(input) {
+          return parseInt(input);
+        }
+      },
+      {
+        name: "stock",
+        type: "input",
+        message: "Add the current amount available of product to be sold.",
+        validate: function(input) {
+          return !isNaN(input);
+        },
+        filter: function(input) {
+          return parseInt(input);
+        }
+      }
+    ]).then((newStuff) => {
 
+      const productEntry = {
+        item_id: newStuff.id,
+        product_name: newStuff.product,
+        department_name: newStuff.department,
+        price: newStuff.price,
+        stock_quantity: newStuff.stock
+      };
+    
+      const query = connection.query("INSERT INTO products SET ?", productEntry, (error, newEntry2Db) => {
+        if (error) throw error;
+        console.log(`\n${newEntry2Db.affectedRows} new product added to Bamazon!\n`);
+
+        managerScreen();
+      });
+    });
+  });
 }
