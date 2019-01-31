@@ -16,16 +16,16 @@ connection.connect(function (error) {
   if (error) throw error;
   console.log("\nYou have connected sucessfully to the database!\n");
   login();
-})
+});
 
-const login = () => {
+const login = () => { // if i have time make it so you have 3 attempts for password to log in. after 3 attempts it locks out.
   connection.query("SELECT * FROM employees", (error, employeeDb) => {
 
     inquirer.prompt([{
         name: "username",
         type: "input",
         message: "Welcome to Bamazon's Management System. Please enter your user credentials.",
-        default: "admin" // maybe leave this out and make a mock database of users and passwords w/ validation...
+        default: "admin"
       },
       {
         name: "password",
@@ -35,12 +35,9 @@ const login = () => {
         default: "admin"
       }
     ]).then((credentials) => {
-      //validate if password is correct
-      // make recursive function and if password false 3x then system gets locked out.
       managerScreen();
-    })
-
-  })
+    });
+  });
 }
 
 
@@ -60,7 +57,7 @@ const managerScreen = () => {
         break;
 
       case "View low inventory":
-        console.log("\n\n");
+        console.log("\nThe following items have fallen below the 1000 unit threshold.\n");
         lowInventory();
         break;
 
@@ -150,12 +147,8 @@ const addInventory = () => {
         case true:
         //update following things with info from response to database.
         var itemSelected = productsDb.find(products => products.item_id === refill.addingItems);
-        //console.log(itemSelected);
-        //console.log(itemSelected.stock_quantity);
-
         var stockRefilled = itemSelected.stock_quantity += refill.quantityAdded;
-        //console.log(stockRefilled);
-        
+
         const updatedProduct = {
           stock_quantity: stockRefilled
         };
@@ -168,9 +161,12 @@ const addInventory = () => {
           if (error) throw error;
           console.log(`\n\n\n${refill.quantityAdded} ${itemSelected.product_name} will be added to company inventory.`);
           console.log(`\nCurrent stock of ${itemSelected.product_name}: ${stockRefilled}.\n`);
-          console.log(`Please press ↑ or ↓ to view selection screen again.\n\n\n\n\n`); // to make the screen less buggy
+          console.log(`Please press ↑ or ↓ to view selection screen again.\n\n\n\n\n`); // It's not a bug but a feature!
         });                                                                          //And make user interface less atrocious...
 
+        //console.log(itemSelected);
+        //console.log(itemSelected.stock_quantity);
+        //console.log(stockRefilled);
         managerScreen();
         break;
       
@@ -188,7 +184,7 @@ const addProduct = () => {
   connection.query("SELECT * FROM products", (error, productsDb) => {
     if (error) throw error;
     inquirer.prompt([
-      { //ITEM ID IS NOT AN INTEGER. STUFF DIES WHEN I TRY TO MAKE IT SO
+      { 
         name: "id",
         type: "input",
         message: "Please assign the product an id."

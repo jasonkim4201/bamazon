@@ -35,6 +35,3 @@ VALUES (760, "Rope", "Home Improvement", 13, 200);
 --employees
 INSERT INTO employees (first_name, last_name, username, password)
 VALUES ("admin", "admin", "admin", "admin");
-
-INSERT INTO employees (first_name, last_name, username, password)
-VALUES ("Jason", "Kim", "jasonkim4201", "superSecretPassword1");
