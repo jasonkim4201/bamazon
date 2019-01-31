@@ -68,18 +68,18 @@ const buyMenu = () => {
         
         const updatedStock = {
           stock_quantity: stockLeft
-        }
+        };
 
         const itemWhere = {
           item_id: itemBought.item_id
-        }
+        };
         
         //MAKE A QUERY TO UPDATE SQL DATABASE TO REFLECT PURCHASE CHANGES
         const query = connection.query("UPDATE products SET ? WHERE ?", [updatedStock, itemWhere], function (error, productsDb) {
           if (error) throw error;
           
-          console.log(`\nYour total will be $${purchaseTotal}.`);
-          console.log(`\nThank you for purchasing at Bamazon. Please come again soon.`);
+          console.log(`\nYour total will be $${purchaseTotal}. \nThank you for purchasing at Bamazon. Please come again soon.`);
+          //console.log(`\nThank you for purchasing at Bamazon. Please come again soon.`);
           process.exit(0);
         })
          

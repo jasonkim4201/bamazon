@@ -118,6 +118,8 @@ const lowInventory = () => {
 
 const addInventory = () => {
   connection.query("SELECT * FROM products", (error, productsDb) => {
+    if (error) throw error;
+    console.log("RESTOCK QUESTION");
     inquirer.prompt([
       {
         name: "addingItems",
@@ -142,22 +144,42 @@ const addInventory = () => {
         message: "Please verify that you want to go through with this order.",
         default: true
       }
-    ]).then((response) => {
-      switch (response.confirmation) {
+    ]).then((refill) => {
+      switch (refill.confirmation) {
         case true:
         //update following things with info from response to database.
+        var itemSelected = productsDb.find(products => products.item_id === refill.addingItems);
+        //console.log(itemSelected);
+        //console.log(itemSelected.stock_quantity);
 
+        var stockRefilled = itemSelected.stock_quantity += refill.quantityAdded;
+        //console.log(stockRefilled);
+        
+        const updatedProduct = {
+          stock_quantity: stockRefilled
+        };
+
+        const itemWhere = {
+          item_id: itemSelected.item_id
+        };
+
+        const query = connection.query("UPDATE products SET ? WHERE ?", [updatedProduct, itemWhere], (error, productsDb) => {
+          if (error) throw error;
+          console.log(`\n\n\n${refill.quantityAdded} ${itemSelected.product_name} will be added to company inventory.`);
+          console.log(`\nCurrent stock of ${itemSelected.product_name}: ${stockRefilled}.\n`);
+          console.log(`Please press ↑ or ↓ to view selection screen again.\n\n\n\n\n`); // to make the screen less buggy
+        });                                                                          //And make user interface less atrocious...
+
+        managerScreen();
         break;
       
         default:
         console.log("\n========= Your order has been cancelled. You will be brought back to the main menu. ========= \n");
         return managerScreen();
       }
-    })
+    });
 
-
-
-  })
+  });
 }
 
 const addProduct = () => {
