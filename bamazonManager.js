@@ -64,8 +64,7 @@ const managerScreen = () => {
         break;
 
       case "Add to inventory":
-        console.log("\n\n");
-        process.exit(0);
+        addInventory();
         break;
 
       case "Add new product":
@@ -100,7 +99,7 @@ const viewProducts = () => {
 
 
 const lowInventory = () => {
-  connection.query("SELECT * FROM products WHERE stock_quantity < 3500", (error, productsDb) => {
+  connection.query("SELECT * FROM products WHERE stock_quantity < 2500", (error, productsDb) => {
     if (error) throw error;
     console.table(productsDb);
 
@@ -115,4 +114,52 @@ const lowInventory = () => {
     });
 
   });
+}
+
+const addInventory = () => {
+  connection.query("SELECT * FROM products", (error, productsDb) => {
+    inquirer.prompt([
+      {
+        name: "addingItems",
+        type: "list",
+        message: "Please select an item you wish to restock on.",
+        choices: productsDb.map(products => products.item_id)
+       },
+       {
+        name: "quantityAdded",
+        type: "input",
+        message: "How much of would you like to restock?",
+        validate: function (input) {
+          return !isNaN(input);
+        },
+        filter: function(input) {
+          return parseInt(input);
+        }
+      },
+      {
+        name: "confirmation",
+        type: "confirm",
+        message: "Please verify that you want to go through with this order.",
+        default: true
+      }
+    ]).then((response) => {
+      switch (response.confirmation) {
+        case true:
+        //update following things with info from response to database.
+
+        break;
+      
+        default:
+        console.log("\n========= Your order has been cancelled. You will be brought back to the main menu. ========= \n");
+        return managerScreen();
+      }
+    })
+
+
+
+  })
+}
+
+const addProduct = () => {
+
 }

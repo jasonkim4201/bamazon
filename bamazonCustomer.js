@@ -46,7 +46,7 @@ const buyMenu = () => {
      {
        name: "confirmation",
        type: "confirm",
-       message: "Are you sure you want to confirm with your transaction?",
+       message: "Are you sure you want to continue with your transaction?",
        default: true
      }
     ]).then((response) => {
