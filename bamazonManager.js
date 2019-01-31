@@ -50,12 +50,11 @@ const managerScreen = () => {
     type: "list",
     message: "Please select any of the following options below.",
     choices: ["View products for sale", "View low inventory", "Add to inventory", "Add new product", "Exit"],
-  }]).then(({
-    managerMenu
-  }) => {
+  }]).then(({managerMenu}) => {
+
     switch (managerMenu) {
       case "View products for sale":
-        console.log("PRODUCTS HERE");
+        console.log("\n\n");
         viewProducts();
         break;
 
@@ -84,6 +83,17 @@ const managerScreen = () => {
 
 const viewProducts = () => {
   connection.query("SELECT * FROM products", (error, productsDb) => {
+    if (error) throw error;
+    console.table(productsDb);
     
-  })
+    inquirer.prompt([
+      {
+        name: "return2Menu",
+        type: "input",
+        message: "Press enter to return to the main page.\n"
+      }
+    ]).then((response) => {
+      managerScreen();
+    });
+  });
 }
