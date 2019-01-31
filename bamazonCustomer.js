@@ -15,8 +15,27 @@ var connection = mysql.createConnection({
 connection.connect(function (error) {
   if (error) throw error;
   console.log("You have connected sucessfully to the database!");
-  buyMenu();
+  welcomePage();
 })
+
+const welcomePage = () => {
+  inquirer.prompt([
+    {
+      name: "home",
+      type: "list",
+      message: "Welcome to Bamazon. Please select which action you want to perform.",
+      choices: ["SHOP", "EXIT"]
+    }
+  ]).then(({home}) => {
+    switch (home) {
+      case "SHOP":
+        return buyMenu();
+    
+      default:
+        return process.exit(0);
+    }
+  });
+}
 
 const buyMenu = () => {
   //GET LISTED PRODUCTS FROM SQL DATABASE
@@ -29,7 +48,7 @@ const buyMenu = () => {
      {
       name: "listedItems",
       type: "list",
-      message: "Welcome to Bamazon. Please select an item by the item id to make a purchase.",
+      message: "Please select an item by the item id to make a purchase.",
       choices: productsDb.map(products => products.item_id)
      },
      {
@@ -80,18 +99,19 @@ const buyMenu = () => {
           
           console.log(`\nYour total will be $${purchaseTotal}. \nThank you for purchasing at Bamazon. Please come again soon.`);
           //console.log(`\nThank you for purchasing at Bamazon. Please come again soon.`);
-          process.exit(0);
+          welcomePage();
         })
          
         } else {
           console.log("Your order exceeds the amount we currently have.");
-          return buyMenu();
+          return welcomePage();
         }
+
         break;
       
         default:
         console.log("\n========= Your transaction has been cancelled. You will be brought back to the main menu. ========= \n");
-        return buyMenu();
+        return welcomePage();
       }
     });
   })
