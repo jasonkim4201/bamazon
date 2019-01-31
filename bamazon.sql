@@ -4,6 +4,7 @@ CREATE DATABASE bamazon;
 
 USE bamazon;
 
+
 CREATE TABLE products (
   item_id VARCHAR(10) NOT NULL,
   product_name VARCHAR(30) NOT NULL,
@@ -17,6 +18,8 @@ CREATE TABLE products (
 USE bamazon;
 
 DROP TABLE IF EXISTS employees;
+
+
 
 CREATE TABLE employees (
   id INTEGER(6) NOT NULL AUTO_INCREMENT,

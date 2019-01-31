@@ -59,17 +59,17 @@ const managerScreen = () => {
         break;
 
       case "View low inventory":
-        console.log("VIEW LOW INVENTORY.");
-        process.exit(0);
+        console.log("\n\n");
+        lowInventory();
         break;
 
       case "Add to inventory":
-        console.log("ADD STUFF");
+        console.log("\n\n");
         process.exit(0);
         break;
 
       case "Add new product":
-        console.log("ADD NEW THINGS");
+        console.log("\n\n");
         process.exit(0);
         break;
 
@@ -95,5 +95,24 @@ const viewProducts = () => {
     ]).then((response) => {
       managerScreen();
     });
+  });
+}
+
+
+const lowInventory = () => {
+  connection.query("SELECT * FROM products WHERE stock_quantity < 3500", (error, productsDb) => {
+    if (error) throw error;
+    console.table(productsDb);
+
+    inquirer.prompt([
+      {
+        name: "return2Menu",
+        type: "input",
+        message: "Press enter to return to the main page.\n"
+      }
+    ]).then((response) => {
+      managerScreen();
+    });
+
   });
 }
