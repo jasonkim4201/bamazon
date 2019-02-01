@@ -23,3 +23,5 @@ Welcome to Bamazon services. Here you will be able to find some of the hottest t
 [Refill stock](https://gyazo.com/a820e84c37b4c5f2dbc4169fc0619a5f)
 
 [Add new product](https://gyazo.com/b0964a9d7b90fdf18e2828973f49f4ee)
+
+[Making sure unauthorized personnel can't access manager screen!](https://gyazo.com/29bd3f66a56e7d9b17bff01aa3e8f498)
