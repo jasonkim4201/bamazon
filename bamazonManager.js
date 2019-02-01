@@ -18,6 +18,7 @@ connection.connect(function (error) {
   login(3);
 });
 
+
 const login = (attempts) => { // if i have time make it so you have 3 attempts for password to log in. after 3 attempts it locks out.
 
   if (attempts === 0) {
@@ -51,7 +52,7 @@ const login = (attempts) => { // if i have time make it so you have 3 attempts f
   }
 }
 
-
+// hi
 
 const managerScreen = () => {
   inquirer.prompt([{
