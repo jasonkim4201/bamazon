@@ -40,16 +40,11 @@ const login = (attempts) => { // if i have time make it so you have 3 attempts f
           message: "Please enter your password."
         }
       ]).then((credentials) => {
-
-        //(employeeDb[0].password === credentials.password) original code
-        //console.log(employeeDb.map(employees => employees.password));
-        //console.log(employeeDb.find(employees => employees.password));
-
         if (employeeDb.find(employees => employees.username === credentials.username) &&
             employeeDb.find(employees => employees.password === credentials.password)) {  
-               
-          return managerScreen(); 
-        } else {                
+                                  //not happy with the way i wrote this. accrording to this logic as long as entered password matches
+          return managerScreen(); //anyone's password in database access will be granted. 
+        } else {                  // Oh well I have the recursion function and screen lock working as intended.
           console.log("Access denied.");
           return login(attempts - 1);
         }
