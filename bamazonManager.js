@@ -40,9 +40,15 @@ const login = (attempts) => { // if i have time make it so you have 3 attempts f
           message: "Please enter your password."
         }
       ]).then((credentials) => {
-        if (employeeDb[0].password === credentials.password) { 
-          console.log(attempts);//yes, i'm well aware this makes it so as long as pw is admin you get in regardless of your username
-          managerScreen();      //had i more time i'd make a proper method...but hey im learning recursive functions!
+
+        //(employeeDb[0].password === credentials.password) original code
+        //console.log(employeeDb.map(employees => employees.password));
+        //console.log(employeeDb.find(employees => employees.password));
+
+        if (employeeDb.find(employees => employees.username === credentials.username) &&
+            employeeDb.find(employees => employees.password === credentials.password)) {  
+               
+          return managerScreen(); 
         } else {                
           console.log("Access denied.");
           return login(attempts - 1);
@@ -51,8 +57,6 @@ const login = (attempts) => { // if i have time make it so you have 3 attempts f
     });
   }
 }
-
-// hi
 
 const managerScreen = () => {
   inquirer.prompt([{
