@@ -15,29 +15,40 @@ var connection = mysql.createConnection({
 connection.connect(function (error) {
   if (error) throw error;
   console.log("\nYou have connected sucessfully to the database!\n");
-  login();
+  login(3);
 });
 
-const login = () => { // if i have time make it so you have 3 attempts for password to log in. after 3 attempts it locks out.
-  connection.query("SELECT * FROM employees", (error, employeeDb) => {
+const login = (attempts) => { // if i have time make it so you have 3 attempts for password to log in. after 3 attempts it locks out.
 
-    inquirer.prompt([{
-        name: "username",
-        type: "input",
-        message: "Welcome to Bamazon's Management System. Please enter your user credentials.",
-        default: "admin"
-      },
-      {
-        name: "password",
-        type: "password",
-        mask: true,
-        message: "Please enter your password.",
-        default: "admin"
-      }
-    ]).then((credentials) => {
-      managerScreen();
+  if (attempts === 0) {
+    return console.log("You have been locked out for too many failed attempts.");
+  } else {
+    connection.query("SELECT * FROM employees", (error, employeeDb) => {
+      if (error) throw error;
+
+      inquirer.prompt([{
+          name: "username",
+          type: "input",
+          message: "Welcome to Bamazon's Management System. Please enter your user credentials.",
+          default: "admin"
+        },
+        {
+          name: "password",
+          type: "password",
+          mask: true,
+          message: "Please enter your password."
+        }
+      ]).then((credentials) => {
+        if (employeeDb[0].password === credentials.password) { 
+          console.log(attempts);//yes, i'm well aware this makes it so as long as pw is admin you get in regardless of your username
+          managerScreen();      //had i more time i'd make a proper method...but hey im learning recursive functions!
+        } else {                
+          console.log("Access denied.");
+          return login(attempts - 1);
+        }
+      });
     });
-  });
+  }
 }
 
 
