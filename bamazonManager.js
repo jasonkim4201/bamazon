@@ -19,11 +19,12 @@ connection.connect(function (error) {
 });
 
 
-const login = (attempts) => { // if i have time make it so you have 3 attempts for password to log in. after 3 attempts it locks out.
+const login = (attempts) => {
 
   if (attempts === 0) {
     return console.log("You have been locked out for too many failed attempts.");
-  } else {
+  } 
+  else {
     connection.query("SELECT * FROM employees", (error, employeeDb) => {
       if (error) throw error;
 
@@ -40,6 +41,7 @@ const login = (attempts) => { // if i have time make it so you have 3 attempts f
           message: "Please enter your password."
         }
       ]).then((credentials) => {
+        console.log(employeeDb.map(employees => employees.password));
         if (employeeDb.find(employees => employees.username === credentials.username) &&
             employeeDb.find(employees => employees.password === credentials.password)) {  
                                   //not happy with the way i wrote this. accrording to this logic as long as entered password matches
@@ -128,7 +130,7 @@ const lowInventory = () => {
 const addInventory = () => {
   connection.query("SELECT * FROM products", (error, productsDb) => {
     if (error) throw error;
-    console.log("RESTOCK QUESTION");
+  
     inquirer.prompt([
       {
         name: "addingItems",
